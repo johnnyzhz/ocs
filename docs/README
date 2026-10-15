@@ -2,6 +2,7 @@
 	=== Open Conference Systems
 	=== The Public Knowledge Project
 	=== Version: 3.0.0 (ISDSA-maintained fork)
+    === Date: Oct 15, 2026
 	=== Based on upstream OCS: 2.3.6
 	=== Upstream GIT tag: ocs-2_3_6-0
 	=== Upstream release date: May 28, 2014
@@ -14,8 +15,10 @@ Open Conference Systems (OCS) has been developed by the Public Knowledge
 Project. For general information about OCS and other open research systems,
 visit the PKP web site at <http://pkp.sfu.ca/>.
 
-This ISDSA-maintained fork is version 3.0.0 and is based on PKP OCS 2.3.6.
+This ISDSA-maintained fork is version 3.0.0 and is based on [PKP OCS 2.3.6](https://github.com/pkp/ocs), which is not maintained.
 The fork includes local compatibility changes and a mobile-friendly theme.
+
+For a working site, see https://meeting.isdsa.org
 
 
 License
@@ -35,13 +38,13 @@ Recommended server requirements:
 Compatibility target for this fork:
 
 	* PHP 8.x
-	* MySQL 5.x
+	* MySQL 8.x
 
 These are compatibility targets, not a claim that every PHP 8.x and MySQL 5.x
 combination has been verified. The full PHP source tree has been syntax-checked
 with PHP 8.2.30 and targeted runtime smoke tests have been run. This does not
 verify every application workflow or PHP 8.x release. The current deployment
-uses MySQL 8.4.7; MySQL 5.x has not been tested for this fork. Test the exact
+uses MySQL 8.4.7. Test the exact
 versions and workflows before production use.
 
 Upstream OCS 2.3.6's original system requirements predate PHP 8 and MySQL 5.
