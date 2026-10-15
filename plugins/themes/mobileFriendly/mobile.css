@@ -1,0 +1,143 @@
+/**
+ * Mobile-friendly adjustments for the Classic Blue theme.
+ */
+
+body,
+input,
+select,
+textarea,
+button,
+#header h1,
+#main h2,
+#main h3,
+#content h3 {
+	font: normal 87.5%/1.4 Arial,sans-serif;
+}
+
+@media screen and (min-width: 901px) {
+	#body {
+		font-size: 150%;
+	}
+}
+
+@media screen and (max-width: 900px) {
+	html {
+		-webkit-text-size-adjust: 150%;
+	}
+
+	body {
+		text-align: left;
+	}
+
+	#container {
+		width: 100% !important;
+		min-width: 0 !important;
+		margin: 0;
+	}
+
+	#headerTitle,
+	#header h1 {
+		width: auto;
+		padding: 0.75rem 1rem;
+	}
+
+	#header h1 img,
+	#content img,
+	#content video,
+	#content iframe {
+		max-width: 100%;
+		height: auto;
+	}
+
+	#body {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: auto;
+	}
+
+	#main {
+		order: 1;
+		float: none !important;
+		width: 100% !important;
+		margin: 0 !important;
+		padding: 0.75rem 1rem 1.5rem;
+		overflow: visible;
+		box-sizing: border-box;
+	}
+
+	#sidebar {
+		order: 2;
+		float: none !important;
+		width: 100% !important;
+		margin: 0;
+		padding: 0 1rem 1rem;
+		box-sizing: border-box;
+	}
+
+	#leftSidebar,
+	#rightSidebar {
+		float: none !important;
+		display: block;
+		width: 100% !important;
+		height: auto;
+		margin: 0;
+		padding: 0.5rem 0;
+		overflow: visible;
+		box-sizing: border-box;
+	}
+
+	#navbar {
+		padding: 0.25rem 0;
+	}
+
+	#navbar ul.menu {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	#navbar ul.menu li {
+		float: none;
+		margin: 0;
+	}
+
+	#navbar ul.menu a {
+		display: block;
+		padding: 0.65rem 0.75rem;
+		font-size: 1rem;
+		letter-spacing: normal;
+	}
+
+	#content {
+		max-width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		font-size: 1rem;
+		overflow-wrap: anywhere;
+	}
+
+	#content input,
+	#content select,
+	#content textarea,
+	#content button {
+		max-width: 100%;
+		box-sizing: border-box;
+		font-size: 1rem;
+	}
+
+	#content input[type="submit"],
+	#content input[type="button"],
+	#content button,
+	#content a.action {
+		min-height: 2.75rem;
+	}
+
+	#content pre {
+		max-width: 100%;
+		overflow-x: auto;
+	}
+}
