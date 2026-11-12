@@ -61,7 +61,7 @@ class TrackForm extends Form {
 	/**
 	 * Display the form.
 	 */
-	function display() {
+	function display($request = null, $fetch = false) {
 		$conference =& Request::getConference();
 		$schedConf =& Request::getSchedConf();
 		$templateMgr =& TemplateManager::getManager();
@@ -113,7 +113,7 @@ class TrackForm extends Form {
 		}
 		$templateMgr->assign_by_ref('reviewFormOptions', $reviewFormOptions);
 
-		parent::display();
+		return parent::display($request, $fetch);
 	}
 
 	/**

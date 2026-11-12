@@ -56,11 +56,11 @@ class GroupForm extends Form {
 	/**
 	 * Display the form.
 	 */
-	function display() {
+	function display($request = null, $fetch = false) {
 		$templateMgr =& TemplateManager::getManager();
 		$templateMgr->assign_by_ref('group', $this->group);
 		$templateMgr->assign('helpTopicId', 'conference.currentConferences.organizingTeam');
-		parent::display();
+		parent::display($request, $fetch);
 	}
 
 	/**
