@@ -27,13 +27,14 @@ class GroupDAO extends DAO {
 	 * @return Group
 	 */
 	function &getGroup($groupId, $assocType = null, $assocId = null) {
+		$groupsTable = $this->getGroupsTableName();
 		$params = array((int) $groupId);
 		if ($assocType !== null) {
 			$params[] = (int) $assocType;
 			$params[] = (int) $assocId;
 		}
 		$result =& $this->retrieve(
-			'SELECT * FROM groups WHERE group_id = ?' . ($assocType !== null?' AND assoc_type = ? AND assoc_id = ?':''), $params
+			'SELECT * FROM ' . $groupsTable . ' WHERE group_id = ?' . ($assocType !== null?' AND assoc_type = ? AND assoc_id = ?':''), $params
 		);
 
 		$returner = null;
@@ -54,11 +55,12 @@ class GroupDAO extends DAO {
 	 * @return array
 	 */
 	function &getGroups($assocType, $assocId, $context = null, $rangeInfo = null) {
+		$groupsTable = $this->getGroupsTableName();
 		$params = array((int) $assocType, (int) $assocId);
 		if ($context !== null) $params[] = (int) $context;
 
 		$result =& $this->retrieveRange(
-			'SELECT * FROM groups WHERE assoc_type = ? AND assoc_id = ?' . ($context!==null?' AND context = ?':'') . ' ORDER BY context, seq',
+			'SELECT * FROM ' . $groupsTable . ' WHERE assoc_type = ? AND assoc_id = ?' . ($context!==null?' AND context = ?':'') . ' ORDER BY context, seq',
 			$params, $rangeInfo
 		);
 
@@ -110,7 +112,7 @@ class GroupDAO extends DAO {
 	 */
 	function insertGroup(&$group) {
 		$this->update(
-			'INSERT INTO groups
+			'INSERT INTO ' . $this->getGroupsTableName() . '
 				(seq, assoc_type, assoc_id, about_displayed, context)
 				VALUES
 				(?, ?, ?, ?, ?)',
@@ -134,7 +136,7 @@ class GroupDAO extends DAO {
 	 */
 	function updateObject(&$group) {
 		$returner = $this->update(
-			'UPDATE groups
+			'UPDATE ' . $this->getGroupsTableName() . '
 				SET	seq = ?,
 					assoc_type = ?,
 					assoc_id = ?,
@@ -180,7 +182,7 @@ class GroupDAO extends DAO {
 		$groupMembershipDao =& DAORegistry::getDAO('GroupMembershipDAO');
 		$groupMembershipDao->deleteMembershipByGroupId($groupId);
 		$this->update('DELETE FROM group_settings WHERE group_id = ?', $groupId);
-		return $this->update('DELETE FROM groups WHERE group_id = ?', $groupId);
+		return $this->update('DELETE FROM ' . $this->getGroupsTableName() . ' WHERE group_id = ?', $groupId);
 	}
 
 	/**
@@ -205,7 +207,7 @@ class GroupDAO extends DAO {
 		if ($assocType !== null) $params = array((int) $assocType, (int) $assocId);
 		else $params = array();
 		$result =& $this->retrieve(
-			'SELECT group_id FROM groups' .
+			'SELECT group_id FROM ' . $this->getGroupsTableName() .
 			($assocType !== null?' WHERE assoc_type = ? AND assoc_id = ?':'') .
 			' ORDER BY seq',
 			$params
@@ -214,7 +216,7 @@ class GroupDAO extends DAO {
 		for ($i=1; !$result->EOF; $i++) {
 			list($groupId) = $result->fields;
 			$this->update(
-				'UPDATE groups SET seq = ? WHERE group_id = ?',
+				'UPDATE ' . $this->getGroupsTableName() . ' SET seq = ? WHERE group_id = ?',
 				array(
 					$i,
 					$groupId
@@ -234,6 +236,11 @@ class GroupDAO extends DAO {
 	 */
 	function getInsertGroupId() {
 		return $this->getInsertId('groups', 'group_id');
+	}
+
+	function getGroupsTableName() {
+		$nameQuote = $this->_dataSource->nameQuote;
+		return $nameQuote . 'groups' . $nameQuote;
 	}
 }
 
