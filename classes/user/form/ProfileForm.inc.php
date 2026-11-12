@@ -83,13 +83,79 @@ class ProfileForm extends Form {
 		if (!$fileManager->uploadSiteFile('profileImage', $uploadName)) return false;
 
 		$filePath = $fileManager->getSiteFilesPath();
-		list($width, $height) = getimagesize($filePath . '/' . $uploadName);
+		$imagePath = $filePath . '/' . $uploadName;
+		$imageInfo = getimagesize($imagePath);
+		if ($imageInfo === false) {
+			$fileManager->removeSiteFile($uploadName);
+			return false;
+		}
+		list($width, $height) = $imageInfo;
 
-		if ($width > 150 || $height > 150 || $width <= 0 || $height <= 0) {
+		if ($width > 3500 || $height > 3500 || $width <= 0 || $height <= 0) {
 			$userSetting = null;
 			$user->updateSetting('profileImage', $userSetting);
-			$fileManager->removeSiteFile($filePath);
+			$fileManager->removeSiteFile($uploadName);
 			return false;
+		}
+
+		if ($width > 150) {
+			$newHeight = max(1, (int) round($height * 150 / $width));
+			$imageData = file_get_contents($imagePath);
+			$sourceImage = $imageData === false ? false : imagecreatefromstring($imageData);
+			$resizedImage = $sourceImage === false ? false : imagecreatetruecolor(150, $newHeight);
+
+			if ($sourceImage === false || $resizedImage === false) {
+				if ($sourceImage !== false) imagedestroy($sourceImage);
+				$fileManager->removeSiteFile($uploadName);
+				return false;
+			}
+
+			if ($imageInfo[2] === IMAGETYPE_PNG) {
+				imagealphablending($resizedImage, false);
+				imagesavealpha($resizedImage, true);
+				$transparentColor = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
+				imagefill($resizedImage, 0, 0, $transparentColor);
+			} elseif ($imageInfo[2] === IMAGETYPE_GIF) {
+				imagealphablending($resizedImage, false);
+				$transparentIndex = imagecolortransparent($sourceImage);
+				if ($transparentIndex >= 0) {
+					$transparentRgb = imagecolorsforindex($sourceImage, $transparentIndex);
+					$transparentColor = imagecolorallocate(
+						$resizedImage,
+						$transparentRgb['red'],
+						$transparentRgb['green'],
+						$transparentRgb['blue']
+					);
+					imagefill($resizedImage, 0, 0, $transparentColor);
+					imagecolortransparent($resizedImage, $transparentColor);
+				}
+			}
+
+			$resized = imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, 150, $newHeight, $width, $height);
+			$saved = false;
+			if ($resized) {
+				switch ($imageInfo[2]) {
+					case IMAGETYPE_GIF:
+						$saved = imagegif($resizedImage, $imagePath);
+						break;
+					case IMAGETYPE_JPEG:
+						$saved = imagejpeg($resizedImage, $imagePath, 90);
+						break;
+					case IMAGETYPE_PNG:
+						$saved = imagepng($resizedImage, $imagePath);
+						break;
+				}
+			}
+
+			imagedestroy($sourceImage);
+			imagedestroy($resizedImage);
+			if (!$saved) {
+				$fileManager->removeSiteFile($uploadName);
+				return false;
+			}
+
+			$width = 150;
+			$height = $newHeight;
 		}
 
 		$userSetting = array(
